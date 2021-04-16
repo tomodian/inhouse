@@ -10,6 +10,78 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSources(t *testing.T) {
+	{
+		// Success cases, recursive
+		type pattern struct {
+			recursive bool
+		}
+
+		pats := []pattern{
+			{
+				recursive: true,
+			},
+			{
+				recursive: false,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := Sources(p.recursive)
+
+			require.NoError(t, err)
+			assert.NotNil(t, got)
+
+			for _, g := range got {
+				name := filepath.Base(g)
+
+				assert.Falsef(t, strings.HasSuffix(name, "_test.go"), spew.Sdump(p, got))
+			}
+		}
+	}
+
+	{
+		// Fail cases
+		// TODO
+	}
+}
+
+func TestTests(t *testing.T) {
+	{
+		// Success cases, recursive
+		type pattern struct {
+			recursive bool
+		}
+
+		pats := []pattern{
+			{
+				recursive: true,
+			},
+			{
+				recursive: false,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := Tests(p.recursive)
+
+			require.NoError(t, err)
+			assert.NotNil(t, got)
+
+			for _, g := range got {
+				name := filepath.Base(g)
+
+				assert.Truef(t, strings.HasSuffix(name, "_test.go"), spew.Sdump(p, got))
+			}
+		}
+	}
+
+	{
+		// Fail cases
+		// TODO
+	}
+}
+
 func TestGlob(t *testing.T) {
 
 	dir, err := PWD()
