@@ -1,7 +1,6 @@
 package clubrule
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
@@ -9,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestFunctions(t *testing.T) {
+func TestContainsFunctions(t *testing.T) {
 	{
 		// Success cases
 		type pattern struct {
@@ -37,7 +36,7 @@ func TestFunctions(t *testing.T) {
 		}
 
 		for _, p := range pats {
-			got, err := Functions(fmt.Sprintf("testdata/%s", p.path))
+			got, err := Functions(testfile(p.path))
 
 			require.NoError(t, err)
 			assert.Equalf(t, p.expected, len(got), spew.Sdump(p))
@@ -46,15 +45,8 @@ func TestFunctions(t *testing.T) {
 
 	{
 		// Fail cases
-		pats := []string{
-			"misc/non-existent.txt",
-			"misc/binary.png",
-			"misc/just-a.txt",
-			"misc/README.md",
-		}
-
-		for _, p := range pats {
-			got, err := Functions(fmt.Sprintf("testdata/%s", p))
+		for _, p := range nonGoFiles {
+			got, err := Functions(testfile(p))
 
 			require.Error(t, err)
 			assert.Nil(t, got)
