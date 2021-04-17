@@ -11,10 +11,12 @@ const (
 
 // Log conditionally STDOUTs the given message,
 // depending on DEBUG flag.
-func Log(msg string) {
+func Log(msg ...string) {
 	if os.Getenv(debug) == "" {
 		return
 	}
 
-	fmt.Println(msg)
+	for _, m := range msg {
+		fmt.Println(m)
+	}
 }

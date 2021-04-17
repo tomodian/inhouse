@@ -27,7 +27,7 @@ func TestLog(t *testing.T) {
 		orig := os.Getenv(debug)
 		os.Unsetenv(debug)
 
-		Log("hello")
+		Log("hello", "world")
 		w.Close()
 
 		var buf bytes.Buffer
