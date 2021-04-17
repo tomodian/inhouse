@@ -1,4 +1,4 @@
-package clubrule
+package inhouse
 
 // Contains returns true when Go source file contains the specified Go function.
 // `function` parameter is case sensitive, since it checks for both exported and private functions.

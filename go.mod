@@ -1,4 +1,4 @@
-module clubrule
+module inhouse
 
 go 1.16
 

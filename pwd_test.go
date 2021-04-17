@@ -1,4 +1,4 @@
-package clubrule
+package inhouse
 
 import (
 	"strings"
