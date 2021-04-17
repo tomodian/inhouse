@@ -3,36 +3,39 @@ package inhouse
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/bmatcuk/doublestar/v3"
 )
 
 // Sources returns .go files excluding *_test.go.
-func Sources(recursive bool) ([]string, error) {
-	pwd, err := PWD()
+func Sources(dir string, recursive bool) ([]string, error) {
+
+	target, err := globDir(dir)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return glob(globInput{
-		dir:            pwd,
+		dir:            target,
 		recursive:      recursive,
 		ignoreSuffixes: []string{"_test.go"},
 	})
 }
 
 // Tests returns *_test.go files.
-func Tests(recursive bool) ([]string, error) {
-	pwd, err := PWD()
+func Tests(dir string, recursive bool) ([]string, error) {
+
+	target, err := globDir(dir)
 
 	if err != nil {
 		return nil, err
 	}
 
 	got, err := glob(globInput{
-		dir:       pwd,
+		dir:       target,
 		recursive: recursive,
 	})
 
@@ -49,6 +52,37 @@ func Tests(recursive bool) ([]string, error) {
 	}
 
 	return outs, nil
+}
+
+func globDir(dir string) (string, error) {
+	target := ""
+
+	switch dir {
+	case "":
+		// Use caller directory (pwd) when directory is not specified.
+		pwd, err := PWD()
+
+		if err != nil {
+			return "", err
+		}
+
+		target = pwd
+
+	default:
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			return "", err
+		}
+
+		got, err := filepath.Abs(filepath.Dir(dir))
+
+		if err != nil {
+			return "", err
+		}
+
+		target = got
+	}
+
+	return target, nil
 }
 
 type globInput struct {
