@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added Mozilla Public License 2.0
+
+### Changed
+
+- Output coverage report after test
+
 ## [0.1.0] - 2021-04-18
 
 ### Added
@@ -28,7 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Output coverage report after test
 - Fallback to directory when user specified a filepath as directory parameter
 - Enabled to inject preferred directory for globbing
 - DRYed checkers
