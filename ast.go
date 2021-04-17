@@ -10,7 +10,7 @@ import (
 )
 
 // Functions returns both exported and unexported function names.
-func Functions(filepath string) ([]string, error) {
+func Functions(filepath string) ([]Code, error) {
 	file, err := os.Open(filepath)
 
 	if err != nil {
@@ -25,21 +25,26 @@ func Functions(filepath string) ([]string, error) {
 	}
 
 	src := string(buf)
+	fileset := token.NewFileSet()
 
-	f, err := parser.ParseFile(token.NewFileSet(), filepath, src, 0)
+	f, err := parser.ParseFile(fileset, filepath, src, 0)
 
 	if err != nil {
 		return nil, err
 	}
 
-	outs := []string{}
+	outs := []Code{}
 
 	ast.Inspect(f, func(n ast.Node) bool {
 		switch fn := n.(type) {
 
 		// Parse all function declarations.
 		case *ast.FuncDecl:
-			outs = append(outs, fmt.Sprintf("%v", fn.Name))
+			outs = append(outs, Code{
+				Filepath: filepath,
+				Function: fmt.Sprintf("%v", fn.Name),
+				Line:     fileset.Position(fn.Pos()).Line,
+			})
 		}
 
 		return true

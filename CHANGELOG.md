@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Return scan results with line numbers instead of just filepaths
 - Added README
 - Added DirTestContains checker
 - Added Contains checker

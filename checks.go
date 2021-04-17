@@ -1,72 +1,112 @@
 package inhouse
 
+// ContainsOutput represents a matching result of code.
+type ContainsOutput struct {
+	Contained bool
+	Code
+}
+
 // Contains returns true when Go source file contains the specified Go function.
 // `function` parameter is case sensitive, since it checks for both exported and private functions.
 // `error` will be returned in illogical situation, such as passing Non-Go files (e.g. Markdown) or file is missing.
 // Therefore you should always handle the error at first, then proceed to bool checks.
-func Contains(src, function string) (bool, error) {
+func Contains(src, function string) (*ContainsOutput, error) {
 
-	gots, err := Functions(src)
+	codes, err := Functions(src)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	for _, f := range gots {
-		if f == function {
-			return true, nil
+	out := &ContainsOutput{}
+
+	for _, c := range codes {
+		if c.Function == function {
+			out.Contained = true
+			continue
 		}
 	}
 
-	return false, nil
+	return out, nil
+}
+
+// Check represents a checker result.
+type Check struct {
+	Contained bool
+	Matches   []*Code
+	Misses    []*Code
+}
+
+// Sort internal codes.
+func (c *Check) Sort() {
+	c.Matches = sortCode(c.Matches)
+	c.Misses = sortCode(c.Misses)
 }
 
 // SourcesContains returns true when source files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will not check for `*_test.go` files.
-func SourcesContains(function string, recursive bool) (bool, error) {
+func SourcesContains(function string, recursive bool) (*Check, error) {
 	files, err := Sources(recursive)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
+
+	out := &Check{}
 
 	for _, f := range files {
-		ok, err := Contains(f, function)
+		c, err := Contains(f, function)
 
 		if err != nil {
-			return false, err
+			return nil, err
 		}
 
-		if ok {
-			return true, nil
+		if c.Contained {
+			out.Contained = true
+			out.Matches = append(out.Matches, &c.Code)
+
+			continue
 		}
+
+		out.Misses = append(out.Misses, &c.Code)
 	}
 
-	return false, nil
+	out.Sort()
+
+	return out, nil
 }
 
 // TestsContains returns true when test files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will check for `*_test.go` files only.
-func TestsContains(function string, recursive bool) (bool, error) {
+func TestsContains(function string, recursive bool) (*Check, error) {
 	files, err := Tests(recursive)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
+
+	out := &Check{}
 
 	for _, f := range files {
-		ok, err := Contains(f, function)
+		c, err := Contains(f, function)
 
 		if err != nil {
-			return false, err
+			return nil, err
 		}
 
-		if ok {
-			return true, nil
+		if c.Contained {
+			out.Contained = true
+			out.Matches = append(out.Matches, &c.Code)
+
+			continue
 		}
+
+		out.Misses = append(out.Misses, &c.Code)
 	}
 
-	return false, nil
+	out.Sort()
+
+	return out, nil
 }
