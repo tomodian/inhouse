@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestContainsFunction(t *testing.T) {
+func TestContains(t *testing.T) {
 	{
 		// Success cases
 		type pattern struct {
@@ -41,7 +41,7 @@ func TestContainsFunction(t *testing.T) {
 		}
 
 		for _, p := range pats {
-			ok, err := ContainsFunction(testfile(p.path), p.name)
+			ok, err := Contains(testfile(p.path), p.name)
 
 			require.NoError(t, err)
 			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
@@ -51,10 +51,76 @@ func TestContainsFunction(t *testing.T) {
 	{
 		// Fail cases
 		for _, p := range nonGoFiles {
-			got, err := Functions(testfile(p))
+			_, err := Contains(testfile(p), "whatever")
 
 			require.Error(t, err)
-			assert.Nil(t, got)
+		}
+	}
+}
+
+func TestDirSourceContains(t *testing.T) {
+	{
+		// Success cases
+		type pattern struct {
+			name      string
+			recursive bool
+			expected  bool
+		}
+
+		pats := []pattern{
+			{
+				name:      "DirSourceContains",
+				recursive: false,
+				expected:  true,
+			},
+			{
+				name:      "ExportOnly1",
+				recursive: false,
+				expected:  false,
+			},
+			{
+				name:      "ExportOnly1",
+				recursive: true,
+				expected:  true,
+			},
+		}
+
+		for _, p := range pats {
+			ok, err := DirSourceContains(p.name, p.recursive)
+
+			require.NoError(t, err)
+			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
+		}
+	}
+}
+
+func TestDirTestContains(t *testing.T) {
+	{
+		// Success cases
+		type pattern struct {
+			name      string
+			recursive bool
+			expected  bool
+		}
+
+		pats := []pattern{
+			{
+				name:      "DirSourceContains",
+				recursive: false,
+				expected:  false,
+			},
+			{
+				name:      "TestDirTestContains",
+				recursive: false,
+				expected:  true,
+			},
+		}
+
+		for _, p := range pats {
+			ok, err := DirTestContains(p.name, p.recursive)
+
+			require.NoError(t, err)
+			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
 		}
 	}
 }

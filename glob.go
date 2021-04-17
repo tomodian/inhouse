@@ -43,7 +43,7 @@ func Tests(recursive bool) ([]string, error) {
 	outs := []string{}
 
 	for _, g := range got {
-		if strings.HasPrefix(g, "_test.go") {
+		if strings.HasSuffix(g, "_test.go") {
 			outs = append(outs, g)
 		}
 	}
