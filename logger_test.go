@@ -31,7 +31,8 @@ func TestLog(t *testing.T) {
 		w.Close()
 
 		var buf bytes.Buffer
-		buf.ReadFrom(r)
+		_, err = buf.ReadFrom(r)
+		require.NoError(t, err)
 
 		assert.Equal(t, "", strings.TrimRight(buf.String(), "\n"))
 
@@ -54,7 +55,8 @@ func TestLog(t *testing.T) {
 		w.Close()
 
 		var buf bytes.Buffer
-		buf.ReadFrom(r)
+		_, err = buf.ReadFrom(r)
+		require.NoError(t, err)
 
 		assert.Equal(t, expected, strings.TrimRight(buf.String(), "\n"))
 

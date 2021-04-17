@@ -16,7 +16,7 @@ func Log(msg ...string) {
 	}
 
 	for i, m := range msg {
-		fmt.Printf(m)
+		fmt.Print(m)
 
 		if i+1 != len(msg) {
 			fmt.Printf(" ")
