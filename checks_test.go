@@ -55,16 +55,14 @@ func TestContains(t *testing.T) {
 	{
 		// Success cases for empty Go files.
 		type pattern struct {
-			path     string
-			name     string
-			expected bool
+			path string
+			name string
 		}
 
 		pats := []pattern{
 			{
-				path:     "ast/empty.go",
-				name:     "whatever",
-				expected: false,
+				path: "ast/empty.go",
+				name: "whatever",
 			},
 		}
 
@@ -149,14 +147,12 @@ func TestSourcesContains(t *testing.T) {
 		type pattern struct {
 			dir       string
 			recursive bool
-			expected  bool
 		}
 
 		pats := []pattern{
 			{
 				dir:       "non-existent",
 				recursive: false,
-				expected:  true,
 			},
 		}
 
