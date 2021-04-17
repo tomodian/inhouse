@@ -1,7 +1,7 @@
 package inhouse
 
 import (
-	"github.com/bradfitz/slice"
+	"sort"
 )
 
 // Code represents a Go code with some information for post processing.
@@ -13,7 +13,7 @@ type Code struct {
 
 // Sort slice of code by filename.
 func sortCode(given []*Code) []*Code {
-	slice.Sort(given[:], func(i, j int) bool {
+	sort.Slice(given[:], func(i, j int) bool {
 		return given[i].Filepath < given[j].Filepath
 	})
 

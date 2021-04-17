@@ -3,7 +3,12 @@ package inhouse
 // ContainsOutput represents a matching result of code.
 type ContainsOutput struct {
 	Contained bool
-	Code
+	Code      *Code
+}
+
+// HasCode internally checks code field.
+func (c ContainsOutput) HasCode() bool {
+	return c.Code != nil
 }
 
 // Contains returns true when Go source file contains the specified Go function.
@@ -21,6 +26,8 @@ func Contains(src, function string) (*ContainsOutput, error) {
 	out := &ContainsOutput{}
 
 	for _, c := range codes {
+		out.Code = &c
+
 		if c.Function == function {
 			out.Contained = true
 			continue
@@ -37,10 +44,23 @@ type Check struct {
 	Misses    []*Code
 }
 
+// NewCheck with initialized slices.
+func NewCheck() *Check {
+	return &Check{
+		Matches: []*Code{},
+		Misses:  []*Code{},
+	}
+}
+
 // Sort internal codes.
 func (c *Check) Sort() {
-	c.Matches = sortCode(c.Matches)
-	c.Misses = sortCode(c.Misses)
+	if len(c.Matches) > 0 {
+		c.Matches = sortCode(c.Matches)
+	}
+
+	if len(c.Misses) > 0 {
+		c.Misses = sortCode(c.Misses)
+	}
 }
 
 // SourcesContains returns true when source files in the caller directory contains the specified Go function.
@@ -53,28 +73,7 @@ func SourcesContains(function string, recursive bool) (*Check, error) {
 		return nil, err
 	}
 
-	out := &Check{}
-
-	for _, f := range files {
-		c, err := Contains(f, function)
-
-		if err != nil {
-			return nil, err
-		}
-
-		if c.Contained {
-			out.Contained = true
-			out.Matches = append(out.Matches, &c.Code)
-
-			continue
-		}
-
-		out.Misses = append(out.Misses, &c.Code)
-	}
-
-	out.Sort()
-
-	return out, nil
+	return parseContains(function, files)
 }
 
 // TestsContains returns true when test files in the caller directory contains the specified Go function.
@@ -87,7 +86,12 @@ func TestsContains(function string, recursive bool) (*Check, error) {
 		return nil, err
 	}
 
-	out := &Check{}
+	return parseContains(function, files)
+}
+
+// parseContains return a generic check result.
+func parseContains(function string, files []string) (*Check, error) {
+	out := NewCheck()
 
 	for _, f := range files {
 		c, err := Contains(f, function)
@@ -96,14 +100,18 @@ func TestsContains(function string, recursive bool) (*Check, error) {
 			return nil, err
 		}
 
+		if !c.HasCode() {
+			continue
+		}
+
 		if c.Contained {
 			out.Contained = true
-			out.Matches = append(out.Matches, &c.Code)
+			out.Matches = append(out.Matches, c.Code)
 
 			continue
 		}
 
-		out.Misses = append(out.Misses, &c.Code)
+		out.Misses = append(out.Misses, c.Code)
 	}
 
 	out.Sort()

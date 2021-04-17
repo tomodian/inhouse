@@ -21,5 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- DRYed checkers
 - Rebranded from clubrule to inhouse
 - Renamed Dir prefixes for simplicity
