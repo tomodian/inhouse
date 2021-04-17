@@ -16,3 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added exported functions to lookup implementation and test files
 - Added globber
 - GitHub Actions for Linux testing
+
+### Changed
+
+- Renamed Dir prefixes for simplicity

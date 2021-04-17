@@ -21,10 +21,10 @@ func Contains(src, function string) (bool, error) {
 	return false, nil
 }
 
-// DirSourceContains returns true when source files in the caller directory contains the specified Go function.
+// SourcesContains returns true when source files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will not check for `*_test.go` files.
-func DirSourceContains(function string, recursive bool) (bool, error) {
+func SourcesContains(function string, recursive bool) (bool, error) {
 	files, err := Sources(recursive)
 
 	if err != nil {
@@ -46,10 +46,10 @@ func DirSourceContains(function string, recursive bool) (bool, error) {
 	return false, nil
 }
 
-// DirTestContains returns true when test files in the caller directory contains the specified Go function.
+// TestsContains returns true when test files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will check for `*_test.go` files only.
-func DirTestContains(function string, recursive bool) (bool, error) {
+func TestsContains(function string, recursive bool) (bool, error) {
 	files, err := Tests(recursive)
 
 	if err != nil {

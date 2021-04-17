@@ -58,7 +58,7 @@ func TestContains(t *testing.T) {
 	}
 }
 
-func TestDirSourceContains(t *testing.T) {
+func TestSourcesHas(t *testing.T) {
 	{
 		// Success cases
 		type pattern struct {
@@ -69,7 +69,7 @@ func TestDirSourceContains(t *testing.T) {
 
 		pats := []pattern{
 			{
-				name:      "DirSourceContains",
+				name:      "SourcesContains",
 				recursive: false,
 				expected:  true,
 			},
@@ -86,7 +86,7 @@ func TestDirSourceContains(t *testing.T) {
 		}
 
 		for _, p := range pats {
-			ok, err := DirSourceContains(p.name, p.recursive)
+			ok, err := SourcesContains(p.name, p.recursive)
 
 			require.NoError(t, err)
 			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
@@ -94,7 +94,7 @@ func TestDirSourceContains(t *testing.T) {
 	}
 }
 
-func TestDirTestContains(t *testing.T) {
+func TestTestsContains(t *testing.T) {
 	{
 		// Success cases
 		type pattern struct {
@@ -105,19 +105,19 @@ func TestDirTestContains(t *testing.T) {
 
 		pats := []pattern{
 			{
-				name:      "DirSourceContains",
+				name:      "SourcesContains",
 				recursive: false,
 				expected:  false,
 			},
 			{
-				name:      "TestDirTestContains",
+				name:      "TestTestsContains",
 				recursive: false,
 				expected:  true,
 			},
 		}
 
 		for _, p := range pats {
-			ok, err := DirTestContains(p.name, p.recursive)
+			ok, err := TestsContains(p.name, p.recursive)
 
 			require.NoError(t, err)
 			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
