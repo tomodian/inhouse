@@ -8,38 +8,43 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestContainsFunctions(t *testing.T) {
+func TestContainsFunction(t *testing.T) {
 	{
 		// Success cases
 		type pattern struct {
 			path     string
-			expected int
+			name     string
+			expected bool
 		}
 
 		pats := []pattern{
 			{
 				path:     "ast/empty.go",
-				expected: 0,
+				name:     "whatever",
+				expected: false,
+			},
+			{
+				path:     "ast/init.go",
+				name:     "init",
+				expected: true,
 			},
 			{
 				path:     "ast/exportonly.go",
-				expected: 2,
-			},
-			{
-				path:     "ast/mix.go",
-				expected: 2,
+				name:     "ExportOnly1",
+				expected: true,
 			},
 			{
 				path:     "ast/privateonly.go",
-				expected: 2,
+				name:     "privateOnly1",
+				expected: true,
 			},
 		}
 
 		for _, p := range pats {
-			got, err := Functions(testfile(p.path))
+			ok, err := ContainsFunction(testfile(p.path), p.name)
 
 			require.NoError(t, err)
-			assert.Equalf(t, p.expected, len(got), spew.Sdump(p))
+			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
 		}
 	}
 

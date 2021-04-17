@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added ContainsFunction checker
+- Added test utility for DRYing
 - Added AST parser for exported/private functions
 - Added exported functions to lookup implementation and test files
 - Added globber
