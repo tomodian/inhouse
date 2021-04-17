@@ -63,6 +63,16 @@ func (c *Check) Sort() {
 	}
 }
 
+// Combine all codes.
+func (c *Check) Combine() []*Code {
+	out := []*Code{}
+
+	out = append(out, c.Matches...)
+	out = append(out, c.Misses...)
+
+	return sortCode(out)
+}
+
 // SourcesContains returns true when source files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will not check for `*_test.go` files.
