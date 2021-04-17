@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	run(os.Args)
+	_ = run(os.Args)
 }
