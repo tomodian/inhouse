@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Return scan results with line numbers instead of just filepaths
 - Added README
 - Added DirTestContains checker
 - Added Contains checker
@@ -20,5 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- DRYed checkers
 - Rebranded from clubrule to inhouse
 - Renamed Dir prefixes for simplicity

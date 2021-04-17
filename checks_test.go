@@ -8,6 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestNewCheck(t *testing.T) {
+	got := NewCheck()
+
+	assert.False(t, got.Contained)
+	assert.NotNil(t, got.Matches)
+	assert.NotNil(t, got.Misses)
+}
+
 func TestContains(t *testing.T) {
 	{
 		// Success cases
@@ -18,11 +26,6 @@ func TestContains(t *testing.T) {
 		}
 
 		pats := []pattern{
-			{
-				path:     "ast/empty.go",
-				name:     "whatever",
-				expected: false,
-			},
 			{
 				path:     "ast/init.go",
 				name:     "init",
@@ -41,10 +44,36 @@ func TestContains(t *testing.T) {
 		}
 
 		for _, p := range pats {
-			ok, err := Contains(testfile(p.path), p.name)
+			got, err := Contains(testfile(p.path), p.name)
 
 			require.NoError(t, err)
-			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
+			assert.Truef(t, got.HasCode(), spew.Sdump(p))
+			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p))
+		}
+	}
+
+	{
+		// Success cases for empty Go files.
+		type pattern struct {
+			path     string
+			name     string
+			expected bool
+		}
+
+		pats := []pattern{
+			{
+				path:     "ast/empty.go",
+				name:     "whatever",
+				expected: false,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := Contains(testfile(p.path), p.name)
+
+			require.NoError(t, err)
+			assert.Falsef(t, got.Contained, spew.Sdump(p))
+			assert.Falsef(t, got.HasCode(), spew.Sdump(p))
 		}
 	}
 
@@ -58,7 +87,7 @@ func TestContains(t *testing.T) {
 	}
 }
 
-func TestSourcesHas(t *testing.T) {
+func TestSourcesContains(t *testing.T) {
 	{
 		// Success cases
 		type pattern struct {
@@ -86,10 +115,10 @@ func TestSourcesHas(t *testing.T) {
 		}
 
 		for _, p := range pats {
-			ok, err := SourcesContains(p.name, p.recursive)
+			got, err := SourcesContains(p.name, p.recursive)
 
 			require.NoError(t, err)
-			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
+			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p))
 		}
 	}
 }
@@ -117,10 +146,10 @@ func TestTestsContains(t *testing.T) {
 		}
 
 		for _, p := range pats {
-			ok, err := TestsContains(p.name, p.recursive)
+			got, err := TestsContains(p.name, p.recursive)
 
 			require.NoError(t, err)
-			assert.Equalf(t, p.expected, ok, spew.Sdump(p))
+			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p))
 		}
 	}
 }
