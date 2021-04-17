@@ -12,22 +12,37 @@ import (
 
 func TestSources(t *testing.T) {
 	{
-		// Success cases, recursive
+		// Success cases
 		type pattern struct {
+			dir       string
 			recursive bool
 		}
 
 		pats := []pattern{
 			{
+				dir:       "",
 				recursive: true,
 			},
 			{
+				dir:       "",
+				recursive: false,
+			},
+			{
+				dir:       "./",
+				recursive: false,
+			},
+			{
+				dir:       "./testdata",
+				recursive: false,
+			},
+			{
+				dir:       "./.github",
 				recursive: false,
 			},
 		}
 
 		for _, p := range pats {
-			got, err := Sources(p.recursive)
+			got, err := Sources(p.dir, p.recursive)
 
 			require.NoError(t, err)
 			assert.NotNil(t, got)
@@ -42,7 +57,28 @@ func TestSources(t *testing.T) {
 
 	{
 		// Fail cases
-		// TODO
+		type pattern struct {
+			dir       string
+			recursive bool
+		}
+
+		pats := []pattern{
+			{
+				dir:       "non-existent",
+				recursive: false,
+			},
+			{
+				dir:       "non-existent",
+				recursive: true,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := Sources(p.dir, p.recursive)
+
+			require.Error(t, err)
+			assert.Nil(t, got)
+		}
 	}
 }
 
@@ -50,20 +86,27 @@ func TestTests(t *testing.T) {
 	{
 		// Success cases, recursive
 		type pattern struct {
+			dir       string
 			recursive bool
 		}
 
 		pats := []pattern{
 			{
+				dir:       "",
 				recursive: true,
 			},
 			{
+				dir:       "",
 				recursive: false,
+			},
+			{
+				dir:       "./",
+				recursive: true,
 			},
 		}
 
 		for _, p := range pats {
-			got, err := Tests(p.recursive)
+			got, err := Tests(p.dir, p.recursive)
 
 			require.NoError(t, err)
 			assert.NotNil(t, got)
@@ -78,7 +121,67 @@ func TestTests(t *testing.T) {
 
 	{
 		// Fail cases
-		// TODO
+		type pattern struct {
+			dir       string
+			recursive bool
+		}
+
+		pats := []pattern{
+			{
+				dir:       "non-existent",
+				recursive: false,
+			},
+			{
+				dir:       "non-existent",
+				recursive: true,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := Tests(p.dir, p.recursive)
+
+			require.Error(t, err)
+			assert.Nil(t, got)
+		}
+	}
+}
+func TestGlobDir(t *testing.T) {
+	{
+		// Success cases
+		type pattern struct {
+			dir string
+		}
+
+		pats := []pattern{
+			{dir: ""},
+			{dir: "testdata"},
+			{dir: "./testdata"},
+		}
+
+		for _, p := range pats {
+			got, err := globDir(p.dir)
+
+			require.NoErrorf(t, err, spew.Sdump(p))
+			assert.NotSamef(t, p.dir, got, spew.Sdump(p))
+		}
+	}
+
+	{
+		// Fail cases
+		type pattern struct {
+			dir string
+		}
+
+		pats := []pattern{
+			{dir: "non-existent"},
+		}
+
+		for _, p := range pats {
+			got, err := globDir(p.dir)
+
+			require.Errorf(t, err, spew.Sdump(p))
+			assert.Emptyf(t, got, spew.Sdump(p))
+		}
 	}
 }
 
@@ -109,8 +212,8 @@ func TestGlob(t *testing.T) {
 		for _, p := range pats {
 			got, err := glob(p)
 
-			require.NoError(t, err)
-			assert.True(t, len(got) > 0)
+			require.NoErrorf(t, err, spew.Sdump(p))
+			assert.Truef(t, len(got) > 0, spew.Sdump(p))
 
 			for _, g := range got {
 				name := filepath.Base(g)
@@ -133,8 +236,8 @@ func TestGlob(t *testing.T) {
 		for _, p := range pats {
 			got, err := glob(p)
 
-			require.Error(t, err)
-			assert.Nil(t, got)
+			require.Errorf(t, err, spew.Sdump(p))
+			assert.Nilf(t, got, spew.Sdump(p))
 		}
 	}
 }

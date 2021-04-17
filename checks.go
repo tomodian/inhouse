@@ -66,8 +66,8 @@ func (c *Check) Sort() {
 // SourcesContains returns true when source files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will not check for `*_test.go` files.
-func SourcesContains(function string, recursive bool) (*Check, error) {
-	files, err := Sources(recursive)
+func SourcesContains(dir, function string, recursive bool) (*Check, error) {
+	files, err := Sources(dir, recursive)
 
 	if err != nil {
 		return nil, err
@@ -79,8 +79,8 @@ func SourcesContains(function string, recursive bool) (*Check, error) {
 // TestsContains returns true when test files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will check for `*_test.go` files only.
-func TestsContains(function string, recursive bool) (*Check, error) {
-	files, err := Tests(recursive)
+func TestsContains(dir, function string, recursive bool) (*Check, error) {
+	files, err := Tests(dir, recursive)
 
 	if err != nil {
 		return nil, err
