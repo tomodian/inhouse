@@ -1,6 +1,7 @@
 package inhouse
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -156,12 +157,19 @@ func TestGlobDir(t *testing.T) {
 			{dir: ""},
 			{dir: "testdata"},
 			{dir: "./testdata"},
+			// Fallback to dir.
+			{dir: "./testdata/misc/just-a.txt"},
 		}
+
+		cwd, err := os.Getwd()
+		require.NoError(t, err)
 
 		for _, p := range pats {
 			got, err := globDir(p.dir)
 
 			require.NoErrorf(t, err, spew.Sdump(p))
+
+			assert.Truef(t, strings.HasPrefix(got, cwd), spew.Sdump(got))
 			assert.NotSamef(t, p.dir, got, spew.Sdump(p))
 		}
 	}

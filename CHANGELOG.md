@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Log message to STDOUT when DEBUG environment variable is not empty
 - Return scan results with line numbers instead of just filepaths
 - Added README
 - Added DirTestContains checker
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Fallback to directory when user specified a filepath as directory parameter
 - Enabled to inject preferred directory for globbing
 - DRYed checkers
 - Rebranded from clubrule to inhouse

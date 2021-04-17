@@ -117,12 +117,6 @@ func TestSourcesContains(t *testing.T) {
 				expected:  true,
 			},
 			{
-				dir:       "./testdata",
-				name:      "SourcesContains",
-				recursive: true,
-				expected:  true,
-			},
-			{
 				dir:       "",
 				name:      "ExportOnly1",
 				recursive: false,
@@ -134,13 +128,19 @@ func TestSourcesContains(t *testing.T) {
 				recursive: true,
 				expected:  true,
 			},
+			{
+				dir:       "./testdata",
+				name:      "ExportOnly1",
+				recursive: true,
+				expected:  true,
+			},
 		}
 
 		for _, p := range pats {
 			got, err := SourcesContains(p.dir, p.name, p.recursive)
 
 			require.NoError(t, err)
-			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p))
+			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p), spew.Sdump(got))
 		}
 	}
 
