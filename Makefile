@@ -1,4 +1,7 @@
-.PHONY: test
+.PHONY: install test cli
+
+install:
+	go mod tidy
 
 test:
-	go test ./... -cover
+	DEBUG=1 go test ./... -cover
