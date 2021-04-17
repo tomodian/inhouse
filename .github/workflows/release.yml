@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+
+      # Tips on Go binary:
+      # https://github.com/actions/setup-go/issues/27#issuecomment-549102955
+      - name: Build
+        run: |
+          go get github.com/mitchellh/gox
+          export PATH=${PATH}:`go env GOPATH`/bin
+          make build
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -x
+          assets=()
+          for asset in ./build/*.zip ; do
+            assets+=("-a" "$asset")
+          done
+          tag_name="${GITHUB_REF##*/}"
+          hub release edit "${assets[@]}" -m "$tag_name" "$tag_name"
