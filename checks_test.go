@@ -16,6 +16,25 @@ func TestNewCheck(t *testing.T) {
 	assert.NotNil(t, got.Misses)
 }
 
+func TestCheckCombine(t *testing.T) {
+	d := NewCheck()
+
+	d.Matches = []*Code{
+		{Filepath: "/b", Function: "b1", Line: 1},
+		{Filepath: "/b", Function: "b2", Line: 2},
+	}
+
+	d.Misses = []*Code{
+		{Filepath: "/a", Function: "a1", Line: 1},
+		{Filepath: "/a", Function: "a2", Line: 2},
+	}
+
+	got := d.Combine()
+
+	assert.Equal(t, len(d.Matches)+len(d.Misses), len(got))
+	assert.Equal(t, "/a", got[0].Filepath)
+}
+
 func TestContains(t *testing.T) {
 	{
 		// Success cases
