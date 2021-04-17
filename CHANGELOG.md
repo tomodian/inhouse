@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Fallback to directory when user specified a filepath as directory parameter
 - Enabled to inject preferred directory for globbing
 - DRYed checkers
 - Rebranded from clubrule to inhouse

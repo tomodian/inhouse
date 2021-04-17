@@ -54,10 +54,14 @@ func Tests(dir string, recursive bool) ([]string, error) {
 	return outs, nil
 }
 
-func globDir(dir string) (string, error) {
+// globDir returns an absolute path of the given directory.
+// Fallback to directory when given path is pointing to file.
+func globDir(given string) (string, error) {
+	Log(given)
+
 	target := ""
 
-	switch dir {
+	switch given {
 	case "":
 		// Use caller directory (pwd) when directory is not specified.
 		pwd, err := PWD()
@@ -69,11 +73,25 @@ func globDir(dir string) (string, error) {
 		target = pwd
 
 	default:
-		if _, err := os.Stat(dir); os.IsNotExist(err) {
+		cwd, err := os.Getwd()
+
+		if err != nil {
 			return "", err
 		}
 
-		got, err := filepath.Abs(filepath.Dir(dir))
+		stat, err := os.Stat(given)
+
+		if err != nil || os.IsNotExist(err) {
+			return "", err
+		}
+
+		dir := given
+
+		if !stat.IsDir() {
+			dir = filepath.Dir(given)
+		}
+
+		got, err := filepath.Abs(filepath.Join(cwd, dir))
 
 		if err != nil {
 			return "", err
@@ -81,6 +99,8 @@ func globDir(dir string) (string, error) {
 
 		target = got
 	}
+
+	Log("resolved dir:", target)
 
 	return target, nil
 }

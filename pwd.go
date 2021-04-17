@@ -10,7 +10,7 @@ import (
 // PWD returns an absolute path of caller origin.
 func PWD() (string, error) {
 
-	_, filename, _, ok := runtime.Caller(3)
+	_, filename, _, ok := runtime.Caller(2)
 
 	if !ok {
 		return "", errors.New("failed to retrieve runtime caller")
