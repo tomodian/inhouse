@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Moved cli to cli/inhouse for go get install
 - Renamed module to github.com/tomodian/inhouse
 
 ## [0.2.0] - 2021-04-19
