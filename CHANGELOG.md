@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prefixed log with DEBUG marker
 - Output coverage report after test
 
+### Fixed
+
+- Incorrect path was returned when tilda is specified
+
 ## [0.1.0] - 2021-04-18
 
 ### Added
