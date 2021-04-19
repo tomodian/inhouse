@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Defined CLIENV for cli/source/test switching
+
 ### Changed
 
 - Moved cli to cli/inhouse for go get install
