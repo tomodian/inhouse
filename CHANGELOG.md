@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed module to github.com/tomodian/inhouse
+
 ## [0.2.0] - 2021-04-19
 
 ### Added

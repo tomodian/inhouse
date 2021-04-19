@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"inhouse"
+	"github.com/tomodian/inhouse"
 )
 
 func TestInitExists(t *testing.T) {
