@@ -15,7 +15,6 @@ func PWD() (string, error) {
 
 	if os.Getenv(CLIENV) == "" {
 		// Comes into this context when called by source/test code.
-		// https://stackoverflow.com/a/36666114/515244
 		_, filename, _, ok := runtime.Caller(2)
 
 		if !ok {
