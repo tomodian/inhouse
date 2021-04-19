@@ -2,6 +2,7 @@ package inhouse
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -50,15 +51,18 @@ func TestLog(t *testing.T) {
 		orig := os.Getenv(debug)
 		os.Setenv(debug, "1")
 
-		expected := "hello"
-		Log(expected)
+		sample := "hello"
+		Log(sample)
 		w.Close()
 
 		var buf bytes.Buffer
 		_, err = buf.ReadFrom(r)
 		require.NoError(t, err)
 
-		assert.Equal(t, expected, strings.TrimRight(buf.String(), "\n"))
+		exp := fmt.Sprintf("%s: %s", debug, sample)
+		got := strings.TrimRight(buf.String(), "\n")
+
+		assert.Equal(t, exp, got)
 
 		// Teardown
 		os.Setenv(debug, orig)

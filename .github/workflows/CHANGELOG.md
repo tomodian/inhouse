@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2021-04-19
+
+### Changed
+
+- Enabled workflow_dispatch for CI tests
+
 ## [0.1.0] - 2021-04-18
 
 ### Added

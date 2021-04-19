@@ -86,6 +86,18 @@ func SourcesContains(dir, function string, recursive bool) (*Check, error) {
 	return parseContains(function, files)
 }
 
+// SourcesContainsPWD is a wrapper of SourcesContains to resolve directory as `pwd`.
+// Intended to be used inside test codes.
+func SourcesContainsPWD(function string, recursive bool) (*Check, error) {
+	pwd, err := PWD()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return SourcesContains(pwd, function, recursive)
+}
+
 // TestsContains returns true when test files in the caller directory contains the specified Go function.
 // The starting directory is where you call this function.
 // This function will check for `*_test.go` files only.
@@ -97,6 +109,18 @@ func TestsContains(dir, function string, recursive bool) (*Check, error) {
 	}
 
 	return parseContains(function, files)
+}
+
+// TestsContainsPWD is a wrapper of TestsContains to resolve directory as `pwd`.
+// Intended to be used inside test codes.
+func TestsContainsPWD(function string, recursive bool) (*Check, error) {
+	pwd, err := PWD()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return TestsContains(pwd, function, recursive)
 }
 
 // parseContains return a generic check result.

@@ -5,7 +5,7 @@ install:
 	go mod tidy
 
 test:
-	DEBUG=1 go test ./... -cover
+	DEBUG=1 go test -cover -coverprofile=coverage.txt -covermode=atomic ./...
 
 build:
 	cd cli && make build

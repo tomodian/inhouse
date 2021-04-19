@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2021-04-19
+
+### Added
+
+- Added SourcesContainsPWD and TestContainsPWD for simpler test integrations
+- Ignored examples directory from code coverage tracking
+- Added examples to demonstrate inhouse to be used in arbitary test codes
+- Extended Code struct with decorators (colon, csv, tsv, json)
+- Added Mozilla Public License 2.0
+
+### Changed
+
+- Prefixed log with DEBUG marker
+- Output coverage report after test
+
+### Fixed
+
+- Incorrect path was returned when tilda is specified
+
 ## [0.1.0] - 2021-04-18
 
 ### Added

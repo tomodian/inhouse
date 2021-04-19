@@ -15,6 +15,8 @@ func Log(msg ...string) {
 		return
 	}
 
+	fmt.Print(debug, ": ")
+
 	for i, m := range msg {
 		fmt.Print(m)
 

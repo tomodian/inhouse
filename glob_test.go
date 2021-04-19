@@ -182,6 +182,9 @@ func TestGlobDir(t *testing.T) {
 
 		pats := []pattern{
 			{dir: "non-existent"},
+			{dir: "~"},
+			{dir: "/"},
+			{dir: "/home"},
 		}
 
 		for _, p := range pats {
