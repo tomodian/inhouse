@@ -1,7 +1,7 @@
 .PHONY: run test
 
 APP   := inhouse
-BUILD := ../build
+BUILD := ../../build
 CMD   := "go run main.go flags.go run.go"
 
 run:

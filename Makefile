@@ -8,4 +8,4 @@ test:
 	DEBUG=1 go test -cover -coverprofile=coverage.txt -covermode=atomic ./...
 
 build:
-	cd cli && make build
+	cd cli/inhouse && make build
