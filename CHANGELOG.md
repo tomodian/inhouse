@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added SourcesContainsPWD and TestContainsPWD for simpler test integrations
 - Ignored examples directory from code coverage tracking
 - Added examples to demonstrate inhouse to be used in arbitary test codes
 - Extended Code struct with decorators (colon, csv, tsv, json)

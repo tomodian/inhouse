@@ -183,6 +183,75 @@ func TestSourcesContains(t *testing.T) {
 		}
 	}
 }
+func TestSourcesContainsPWD(t *testing.T) {
+	{
+		// Success cases
+		type pattern struct {
+			name      string
+			recursive bool
+			expected  bool
+		}
+
+		pats := []pattern{
+			{
+				name:      "SourcesContains",
+				recursive: false,
+				expected:  true,
+			},
+			{
+				name:      "SourcesContains",
+				recursive: true,
+				expected:  true,
+			},
+			{
+				name:      "ExportOnly1",
+				recursive: false,
+				expected:  false,
+			},
+			{
+				name:      "ExportOnly1",
+				recursive: true,
+				expected:  true,
+			},
+			{
+				name:      "ExportOnly1",
+				recursive: true,
+				expected:  true,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := SourcesContainsPWD(p.name, p.recursive)
+
+			require.NoError(t, err)
+			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p), spew.Sdump(got))
+		}
+	}
+
+	{
+		// Fail cases
+		type pattern struct {
+			recursive bool
+		}
+
+		pats := []pattern{
+			{
+				recursive: false,
+			},
+			{
+				recursive: true,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := SourcesContainsPWD("foo", p.recursive)
+
+			require.NoErrorf(t, err, spew.Sdump(p))
+			require.NotNilf(t, got, spew.Sdump(p))
+			assert.Falsef(t, got.Contained, spew.Sdump(p))
+		}
+	}
+}
 
 func TestTestsContains(t *testing.T) {
 	{
@@ -214,6 +283,83 @@ func TestTestsContains(t *testing.T) {
 
 			require.NoError(t, err)
 			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p))
+		}
+	}
+
+	{
+		// Fail cases
+		type pattern struct {
+			dir       string
+			recursive bool
+		}
+
+		pats := []pattern{
+			{
+				dir:       "non-existent",
+				recursive: false,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := TestsContains(p.dir, "foo", p.recursive)
+
+			require.Error(t, err)
+			assert.Nil(t, got)
+		}
+	}
+}
+
+func TestTestsContainsPWD(t *testing.T) {
+	{
+		// Success cases
+		type pattern struct {
+			name      string
+			recursive bool
+			expected  bool
+		}
+
+		pats := []pattern{
+			{
+				name:      "SourcesContains",
+				recursive: false,
+				expected:  false,
+			},
+			{
+				name:      "TestTestsContains",
+				recursive: false,
+				expected:  true,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := TestsContainsPWD(p.name, p.recursive)
+
+			require.NoError(t, err)
+			assert.Equalf(t, p.expected, got.Contained, spew.Sdump(p))
+		}
+	}
+
+	{
+		// Fail cases
+		type pattern struct {
+			recursive bool
+		}
+
+		pats := []pattern{
+			{
+				recursive: false,
+			},
+			{
+				recursive: true,
+			},
+		}
+
+		for _, p := range pats {
+			got, err := TestsContainsPWD("foo", p.recursive)
+
+			require.NoErrorf(t, err, spew.Sdump(p))
+			assert.NotNilf(t, got, spew.Sdump(p))
+			assert.False(t, got.Contained)
 		}
 	}
 }

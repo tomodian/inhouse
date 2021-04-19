@@ -111,6 +111,18 @@ func TestsContains(dir, function string, recursive bool) (*Check, error) {
 	return parseContains(function, files)
 }
 
+// TestsContainsPWD is a wrapper of TestsContains to resolve directory as `pwd`.
+// Intended to be used inside test codes.
+func TestsContainsPWD(function string, recursive bool) (*Check, error) {
+	pwd, err := PWD()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return TestsContains(pwd, function, recursive)
+}
+
 // parseContains return a generic check result.
 func parseContains(function string, files []string) (*Check, error) {
 	out := NewCheck()
