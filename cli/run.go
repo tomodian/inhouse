@@ -18,7 +18,7 @@ func run(args []string) error {
 			{
 				Name:    "function",
 				Usage:   "search for function name",
-				Aliases: []string{"f"},
+				Aliases: []string{"f", "functions", "funcs"},
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:    dirFlag,

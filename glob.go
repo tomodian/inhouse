@@ -73,11 +73,25 @@ func globDir(given string) (string, error) {
 		target = pwd
 
 	default:
+		home, err := os.UserHomeDir()
+
+		if err != nil {
+			return "", err
+		}
+
+		for _, c := range []string{"/", "/home", home} {
+			if c == given {
+				return "", fmt.Errorf("directory '%s' is too broad which could bloat your machine's CPU usage", given)
+			}
+		}
+
 		cwd, err := os.Getwd()
 
 		if err != nil {
 			return "", err
 		}
+
+		Log("os.Getwd", cwd)
 
 		stat, err := os.Stat(given)
 
@@ -88,7 +102,12 @@ func globDir(given string) (string, error) {
 		dir := given
 
 		if !stat.IsDir() {
-			dir = filepath.Dir(given)
+			dir = filepath.Dir(dir)
+		}
+
+		if filepath.IsAbs(dir) {
+			target = dir
+			break
 		}
 
 		got, err := filepath.Abs(filepath.Join(cwd, dir))
