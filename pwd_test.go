@@ -1,6 +1,7 @@
 package inhouse
 
 import (
+	"os"
 	"strings"
 	"testing"
 
@@ -9,10 +10,23 @@ import (
 )
 
 func TestPWD(t *testing.T) {
+	{
+		// Success case, source mode
+		got, err := PWD()
 
-	got, err := PWD()
+		require.NoError(t, err)
+		assert.NotEmpty(t, got)
+		assert.False(t, strings.HasSuffix(got, ".go"))
+	}
 
-	require.NoError(t, err)
-	assert.NotEmpty(t, got)
-	assert.False(t, strings.HasSuffix(got, ".go"))
+	{
+		// Success case, CLI mode
+		os.Setenv(CLIENV, "yes")
+
+		got, err := PWD()
+
+		require.NoError(t, err)
+		assert.NotEmpty(t, got)
+		assert.False(t, strings.HasSuffix(got, ".go"))
+	}
 }

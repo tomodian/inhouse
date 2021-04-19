@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2021-04-20
+
+### Added
+
+- Defined CLIENV for cli/source/test switching
+
+### Changed
+
+- Moved cli to cli/inhouse for go get install
+- Renamed module to github.com/tomodian/inhouse
+
 ## [0.2.0] - 2021-04-19
 
 ### Added

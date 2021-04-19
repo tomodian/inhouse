@@ -5,8 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"inhouse"
-
+	"github.com/tomodian/inhouse"
 	"github.com/urfave/cli/v2"
 )
 

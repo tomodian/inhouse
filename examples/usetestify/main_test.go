@@ -3,10 +3,9 @@ package main
 import (
 	"testing"
 
-	"inhouse"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tomodian/inhouse"
 )
 
 func TestInitExists(t *testing.T) {
