@@ -25,6 +25,18 @@ func run(args []string) error {
 						Usage:   fmt.Sprintf("target `%s`", strings.ToUpper(dirFlag)),
 						Aliases: []string{"d"},
 					},
+					&cli.StringFlag{
+						Name: formatFlag,
+						Usage: fmt.Sprintf(
+							"select output `FORMAT` (%s, %s, %s, %s)",
+							inhouse.ColonFormat.String(),
+							inhouse.CSVFormat.String(),
+							inhouse.TSVFormat.String(),
+							inhouse.JSONFormat.String(),
+						),
+						DefaultText: inhouse.ColonFormat.String(),
+						Aliases:     []string{"f"},
+					},
 					&cli.BoolFlag{
 						Name:    exitFlag,
 						Usage:   "terminate with exit code 2 on match",
@@ -38,6 +50,7 @@ func run(args []string) error {
 				},
 				Action: func(c *cli.Context) error {
 					dir := c.String(dirFlag)
+					format := c.String(formatFlag)
 					name := c.Args().Get(0)
 
 					got, err := inhouse.SourcesContains(dir, name, true)
@@ -48,14 +61,14 @@ func run(args []string) error {
 
 					if c.Bool(listFlag) {
 						for _, c := range got.Combine() {
-							fmt.Printf("%s %s\n", c.Filepath, c.Function)
+							fmt.Println(c.Format(inhouse.CodeFormat(format)))
 						}
 
 						return nil
 					}
 
 					for _, c := range got.Matches {
-						fmt.Printf("%s:%d\n", c.Filepath, c.Line)
+						fmt.Println(c.Format(inhouse.CodeFormat(format)))
 					}
 
 					if got.Contained && c.Bool(exitFlag) {

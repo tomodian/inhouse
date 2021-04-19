@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Extended Code struct with decorators (colon, csv, tsv, json)
 - Added Mozilla Public License 2.0
 
 ### Changed
 
+- Prefixed log with DEBUG marker
 - Output coverage report after test
 
 ## [0.1.0] - 2021-04-18
