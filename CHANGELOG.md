@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2021-04-20
+
+### Added
+
+- Contains and ContainsPWD checks to target both source and test files
+
+### Changed
+
+- Renamed Contains to matchFunction, and use Contain as Sources/Tests wrapper
+
+### Fixed
+
+- PWD was returning the upper directory when given parameter is a directory
+
 ## [0.3.0] - 2021-04-20
 
 ### Added
