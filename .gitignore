@@ -1,5 +1,6 @@
 .DS_Store
 .vscode
+*.log
 *.tmp
 build
 coverage.txt

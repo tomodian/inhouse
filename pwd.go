@@ -2,7 +2,6 @@ package inhouse
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -10,8 +9,6 @@ import (
 
 // PWD returns an absolute path of caller origin.
 func PWD() (string, error) {
-
-	cwd := ""
 
 	if os.Getenv(CLIENV) == "" {
 		// Comes into this context when called by source/test code.
@@ -21,23 +18,40 @@ func PWD() (string, error) {
 			return "", errors.New("failed to retrieve runtime caller")
 		}
 
-		cwd = filename
+		return parseDir(filename)
+	}
 
-	} else {
-		// Comes into this context when called by CLI.
-		got, err := os.Getwd()
+	// Comes into this context when called by CLI.
+	got, err := os.Getwd()
+
+	if err != nil {
+		return "", err
+	}
+
+	return parseDir(got)
+}
+
+func parseDir(given string) (string, error) {
+	info, err := os.Stat(given)
+
+	if err != nil {
+		return "", err
+	}
+
+	if info.IsDir() {
+		dir, err := filepath.Abs(given)
 
 		if err != nil {
 			return "", err
 		}
 
-		cwd = got
+		return dir, nil
 	}
 
-	dir, err := filepath.Abs(filepath.Dir(cwd))
+	dir, err := filepath.Abs(filepath.Dir(given))
 
 	if err != nil {
-		return "", fmt.Errorf("failed to resolve filepath, %s", err)
+		return "", err
 	}
 
 	return dir, nil

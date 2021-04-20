@@ -1,9 +1,12 @@
 package inhouse
 
 import (
+	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCodeFormatString(t *testing.T) {
@@ -34,7 +37,40 @@ func TestCodeDecorators(t *testing.T) {
 	assert.Equal(t, c.ToColon(), c.Format(ColonFormat))
 	assert.Equal(t, c.ToCSV(), c.Format(CSVFormat))
 	assert.Equal(t, c.ToTSV(), c.Format(TSVFormat))
-	assert.Equal(t, c.ToJSON(), c.Format(JSONFormat))
+}
+
+func TestCodeToJSON(t *testing.T) {
+	c := Code{
+		Filepath: "/a",
+		Function: "b",
+		Line:     100,
+	}
+
+	{
+		// Success case
+		assert.Equal(t, c.ToJSON(), c.Format(JSONFormat))
+	}
+
+	{
+		// Fail case
+		if os.Getenv("BE_CRASHER") == "1" {
+			// Uses this tips to make json.Marshal to fail.
+			// https://stackoverflow.com/a/48901259/515244
+			c.Tester = make(chan int)
+
+			c.ToJSON()
+			return
+		}
+
+		cmd := exec.Command(os.Args[0], "-test.run=TestCodeToJSON")
+		cmd.Env = append(os.Environ(), "BE_CRASHER=1")
+
+		err := cmd.Run()
+		res, ok := err.(*exec.ExitError)
+
+		require.True(t, ok)
+		require.False(t, res.Success())
+	}
 }
 
 func TestSortCode(t *testing.T) {
