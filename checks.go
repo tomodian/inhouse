@@ -11,32 +11,6 @@ func (c ContainsOutput) HasCode() bool {
 	return c.Code != nil
 }
 
-// Contains returns true when Go source file contains the specified Go function.
-// `function` parameter is case sensitive, since it checks for both exported and private functions.
-// `error` will be returned in illogical situation, such as passing Non-Go files (e.g. Markdown) or file is missing.
-// Therefore you should always handle the error at first, then proceed to bool checks.
-func Contains(src, function string) (*ContainsOutput, error) {
-
-	codes, err := Functions(src)
-
-	if err != nil {
-		return nil, err
-	}
-
-	out := &ContainsOutput{}
-
-	for _, c := range codes {
-		out.Code = &c
-
-		if c.Function == function {
-			out.Contained = true
-			continue
-		}
-	}
-
-	return out, nil
-}
-
 // Check represents a checker result.
 type Check struct {
 	Contained bool
@@ -71,6 +45,58 @@ func (c *Check) Combine() []*Code {
 	out = append(out, c.Misses...)
 
 	return sortCode(out)
+}
+
+// Contains returns true when source files in the caller directory contains the specified Go function.
+// The starting directory is where you call this function.
+// This function will search for source and test files.
+func Contains(dir, function string, recursive bool) (*Check, error) {
+	files, err := Sources(dir, recursive)
+
+	if err != nil {
+		return nil, err
+	}
+
+	tests, err := Tests(dir, recursive)
+
+	if err != nil {
+		return nil, err
+	}
+
+	merged := []string{}
+	merged = append(merged, files...)
+	merged = append(merged, tests...)
+
+	return parseContains(function, merged)
+}
+
+// ContainsPWD returns true when source files in the caller directory contains the specified Go function.
+// The starting directory is where you call this function.
+// This function will search for source and test files.
+func ContainsPWD(function string, recursive bool) (*Check, error) {
+	pwd, err := PWD()
+
+	if err != nil {
+		return nil, err
+	}
+
+	files, err := Sources(pwd, recursive)
+
+	if err != nil {
+		return nil, err
+	}
+
+	tests, err := Tests(pwd, recursive)
+
+	if err != nil {
+		return nil, err
+	}
+
+	merged := []string{}
+	merged = append(merged, files...)
+	merged = append(merged, tests...)
+
+	return parseContains(function, merged)
 }
 
 // SourcesContains returns true when source files in the caller directory contains the specified Go function.
@@ -123,12 +149,38 @@ func TestsContainsPWD(function string, recursive bool) (*Check, error) {
 	return TestsContains(pwd, function, recursive)
 }
 
+// matchFunction returns true when Go source file contains the specified Go function.
+// `function` parameter is case sensitive, since it checks for both exported and private functions.
+// `error` will be returned in illogical situation, such as passing Non-Go files (e.g. Markdown) or file is missing.
+// Therefore you should always handle the error at first, then proceed to bool checks.
+func matchFunction(src, function string) (*ContainsOutput, error) {
+
+	codes, err := Functions(src)
+
+	if err != nil {
+		return nil, err
+	}
+
+	out := &ContainsOutput{}
+
+	for _, c := range codes {
+		out.Code = &c
+
+		if c.Function == function {
+			out.Contained = true
+			continue
+		}
+	}
+
+	return out, nil
+}
+
 // parseContains return a generic check result.
 func parseContains(function string, files []string) (*Check, error) {
 	out := NewCheck()
 
 	for _, f := range files {
-		c, err := Contains(f, function)
+		c, err := matchFunction(f, function)
 
 		if err != nil {
 			return nil, err

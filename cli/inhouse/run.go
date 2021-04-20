@@ -46,13 +46,23 @@ func run(args []string) error {
 						Usage:   "list all functions and quit",
 						Aliases: []string{"l"},
 					},
+					&cli.BoolFlag{
+						Name:  flatFlag,
+						Usage: "search files in flat directory, defaults to recursive",
+						Value: false,
+					},
+					&cli.BoolFlag{
+						Name:  testFlag,
+						Usage: "include test files",
+						Value: false,
+					},
 				},
 				Action: func(c *cli.Context) error {
 					dir := c.String(dirFlag)
 					format := c.String(formatFlag)
 					name := c.Args().Get(0)
 
-					got, err := inhouse.SourcesContains(dir, name, true)
+					got, err := inhouse.SourcesContains(dir, name, !c.Bool(flatFlag))
 
 					if err != nil {
 						return err
