@@ -1,5 +1,9 @@
 package inhouse
 
+import (
+	"encoding/json"
+)
+
 // ContainsOutput represents a matching result of code.
 type ContainsOutput struct {
 	Contained bool
@@ -13,9 +17,9 @@ func (c ContainsOutput) HasCode() bool {
 
 // Check represents a checker result.
 type Check struct {
-	Contained bool
-	Matches   []*Code
-	Misses    []*Code
+	Contained bool    `json:"contained"`
+	Matches   []*Code `json:"matches"`
+	Misses    []*Code `json:"misses"`
 }
 
 // NewCheck with initialized slices.
@@ -45,6 +49,18 @@ func (c *Check) Combine() []*Code {
 	out = append(out, c.Misses...)
 
 	return sortCode(out)
+}
+
+// ToJSON for CLI output.
+func (c Check) ToJSON() (string, error) {
+
+	b, err := json.Marshal(c)
+
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
 }
 
 // Contains returns true when source files in the caller directory contains the specified Go function.

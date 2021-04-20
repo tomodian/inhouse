@@ -33,32 +33,31 @@ func PWD() (string, error) {
 		current = got
 	}
 
-	info, err := os.Stat(current)
+	return parseDir(current)
+}
+
+func parseDir(given string) (string, error) {
+	info, err := os.Stat(given)
 
 	if err != nil {
 		return "", err
 	}
 
-	out := ""
-
 	if info.IsDir() {
-		dir, err := filepath.Abs(current)
+		dir, err := filepath.Abs(given)
 
 		if err != nil {
 			return "", err
 		}
 
-		out = dir
-
-	} else {
-		dir, err := filepath.Abs(filepath.Dir(current))
-
-		if err != nil {
-			return "", err
-		}
-
-		out = dir
+		return dir, nil
 	}
 
-	return out, nil
+	dir, err := filepath.Abs(filepath.Dir(given))
+
+	if err != nil {
+		return "", err
+	}
+
+	return dir, nil
 }

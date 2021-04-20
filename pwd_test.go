@@ -30,3 +30,34 @@ func TestPWD(t *testing.T) {
 		assert.False(t, strings.HasSuffix(got, ".go"))
 	}
 }
+
+func TestParseDir(t *testing.T) {
+	{
+		// Success case
+		pats := []string{
+			"./",
+			"./testdata",
+		}
+
+		for _, p := range pats {
+			got, err := parseDir(p)
+
+			require.NoError(t, err)
+			assert.NotEmpty(t, got)
+		}
+	}
+
+	{
+		// Fail cases
+		pats := []string{
+			"./non-existent",
+		}
+
+		for _, p := range pats {
+			got, err := parseDir(p)
+
+			require.Error(t, err)
+			assert.Empty(t, got)
+		}
+	}
+}

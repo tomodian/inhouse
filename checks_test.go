@@ -35,6 +35,15 @@ func TestCheckCombine(t *testing.T) {
 	assert.Equal(t, "/a", got[0].Filepath)
 }
 
+func TestCheckToJSON(t *testing.T) {
+	d := NewCheck()
+
+	got, err := d.ToJSON()
+
+	require.NoError(t, err)
+	assert.NotEmpty(t, got)
+}
+
 func TestMatchFunction(t *testing.T) {
 	{
 		// Success cases

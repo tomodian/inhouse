@@ -38,7 +38,7 @@ func run(args []string) error {
 					},
 					&cli.BoolFlag{
 						Name:    exitFlag,
-						Usage:   "terminate with exit code 2 on match",
+						Usage:   "terminate with exit code 1 on match",
 						Aliases: []string{"e"},
 					},
 					&cli.BoolFlag{
@@ -52,35 +52,53 @@ func run(args []string) error {
 						Value: false,
 					},
 					&cli.BoolFlag{
-						Name:  testFlag,
-						Usage: "include test files",
-						Value: false,
+						Name:    testFlag,
+						Usage:   "include test files to search target",
+						Value:   false,
+						Aliases: []string{"t"},
 					},
 				},
 				Action: func(c *cli.Context) error {
 					dir := c.String(dirFlag)
 					format := c.String(formatFlag)
 					name := c.Args().Get(0)
+					flat := !c.Bool(flatFlag)
 
-					got, err := inhouse.SourcesContains(dir, name, !c.Bool(flatFlag))
+					var check *inhouse.Check
 
-					if err != nil {
-						return err
+					switch {
+					case c.Bool(testFlag):
+						got, err := inhouse.Contains(dir, name, flat)
+
+						if err != nil {
+							return err
+						}
+
+						check = got
+
+					default:
+						got, err := inhouse.SourcesContains(dir, name, flat)
+
+						if err != nil {
+							return err
+						}
+
+						check = got
 					}
 
 					if c.Bool(listFlag) {
-						for _, c := range got.Combine() {
+						for _, c := range check.Combine() {
 							fmt.Println(c.Format(inhouse.CodeFormat(format)))
 						}
 
 						return nil
 					}
 
-					for _, c := range got.Matches {
+					for _, c := range check.Matches {
 						fmt.Println(c.Format(inhouse.CodeFormat(format)))
 					}
 
-					if got.Contained && c.Bool(exitFlag) {
+					if check.Contained && c.Bool(exitFlag) {
 						os.Exit(1)
 					}
 
