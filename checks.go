@@ -20,6 +20,9 @@ type Check struct {
 	Contained bool    `json:"contained"`
 	Matches   []*Code `json:"matches"`
 	Misses    []*Code `json:"misses"`
+
+	// Just for testing.
+	Tester interface{} `json:"tester,omitempty"`
 }
 
 // NewCheck with initialized slices.

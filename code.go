@@ -28,6 +28,9 @@ type Code struct {
 	Filepath string `json:"filePath"`
 	Function string `json:"function"`
 	Line     int    `json:"line"`
+
+	// Just for testing.
+	Tester interface{} `json:"tester,omitempty"`
 }
 
 // Format code to applicable styles.

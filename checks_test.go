@@ -36,12 +36,29 @@ func TestCheckCombine(t *testing.T) {
 }
 
 func TestCheckToJSON(t *testing.T) {
-	d := NewCheck()
+	{
+		// Success case
+		d := NewCheck()
 
-	got, err := d.ToJSON()
+		got, err := d.ToJSON()
 
-	require.NoError(t, err)
-	assert.NotEmpty(t, got)
+		require.NoError(t, err)
+		assert.NotEmpty(t, got)
+	}
+
+	{
+		// Fail case
+		d := NewCheck()
+
+		// Uses this tips to make json.Marshal to fail.
+		// https://stackoverflow.com/a/48901259/515244
+		d.Tester = make(chan int)
+
+		got, err := d.ToJSON()
+
+		require.Error(t, err)
+		assert.Empty(t, got)
+	}
 }
 
 func TestMatchFunction(t *testing.T) {
