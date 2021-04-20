@@ -10,8 +10,6 @@ import (
 // PWD returns an absolute path of caller origin.
 func PWD() (string, error) {
 
-	current := ""
-
 	if os.Getenv(CLIENV) == "" {
 		// Comes into this context when called by source/test code.
 		_, filename, _, ok := runtime.Caller(2)
@@ -20,20 +18,17 @@ func PWD() (string, error) {
 			return "", errors.New("failed to retrieve runtime caller")
 		}
 
-		current = filename
-
-	} else {
-		// Comes into this context when called by CLI.
-		got, err := os.Getwd()
-
-		if err != nil {
-			return "", err
-		}
-
-		current = got
+		return parseDir(filename)
 	}
 
-	return parseDir(current)
+	// Comes into this context when called by CLI.
+	got, err := os.Getwd()
+
+	if err != nil {
+		return "", err
+	}
+
+	return parseDir(got)
 }
 
 func parseDir(given string) (string, error) {
